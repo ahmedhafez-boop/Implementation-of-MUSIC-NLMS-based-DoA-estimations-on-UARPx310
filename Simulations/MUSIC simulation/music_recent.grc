@@ -1,0 +1,567 @@
+options:
+  parameters:
+    author: ahmed
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: untitled
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: a
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: AoA
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '-90'
+    step: '1'
+    stop: '90'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 8.0]
+    rotation: 0
+    state: enabled
+- name: center_freq
+  id: variable
+  parameters:
+    comment: ''
+    value: 2.4e9
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 8.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '50000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [168, 8.0]
+    rotation: 0
+    state: enabled
+- name: analog_noise_source_x_0
+  id: analog_noise_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '0.3'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_type: analog.GR_GAUSSIAN
+    seed: '1'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 248.0]
+    rotation: 0
+    state: enabled
+- name: analog_noise_source_x_0_0
+  id: analog_noise_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '0.3'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_type: analog.GR_GAUSSIAN
+    seed: '2'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 432.0]
+    rotation: 0
+    state: enabled
+- name: analog_sig_source_x_0_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '0.5'
+    comment: ''
+    freq: '3000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    showports: 'False'
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 136.0]
+    rotation: 0
+    state: enabled
+- name: analog_sig_source_x_0_0_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '0.5'
+    comment: ''
+    freq: '3000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    showports: 'False'
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 304.0]
+    rotation: 0
+    state: enabled
+- name: blocks_add_const_vxx_0
+  id: blocks_add_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '-90'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: short
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [880, 128.0]
+    rotation: 0
+    state: enabled
+- name: blocks_add_xx_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 368.0]
+    rotation: 0
+    state: enabled
+- name: blocks_add_xx_0_1
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 192.0]
+    rotation: 0
+    state: enabled
+- name: blocks_argmax_xx_0
+  id: blocks_argmax_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '1'
+    type: float
+    vlen: '181'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [688, 216.0]
+    rotation: 0
+    state: enabled
+- name: blocks_phase_shift_0
+  id: blocks_phase_shift
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    is_radians: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    shift: math.sin(math.radians(a)) * 3.14
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 352.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_1
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nmusic_doa_block.py\n------------------\nMUSIC Direction-of-Arrival\
+      \ embedded Python block for GNU Radio.\n\nSignal model \u2014 2-element ULA,\
+      \ d = \u03BB/2 spacing:\n    x1(t) = s(t) + n1(t)\n    x2(t) = s(t)\xB7exp(j\xB7\
+      \u03C0\xB7sin \u03B8) + n2(t)\n\nSteering vector:  a(\u03B8) = [1,  exp(j\xB7\
+      \u03C0\xB7sin \u03B8)]\u1D40\n\nMUSIC pseudospectrum:\n    P(\u03B8) = 1 / (\
+      \ a\u1D34(\u03B8) \xB7 E\u2099 \xB7 E\u2099\u1D34 \xB7 a(\u03B8) )\n\nThe peak\
+      \ of P(\u03B8) is the estimated angle of arrival.\n\nPlace this file in the\
+      \ same directory as music_sim.py.\n\"\"\"\n\nimport numpy as np\nfrom gnuradio\
+      \ import gr\n\n\nclass music_doa(gr.basic_block):\n    \"\"\"\n    MUSIC DOA\
+      \ Estimator \u2014 2-element ULA\n\n    Ports\n    -----\n    in0  : complex64\
+      \   \u2014 element 1 received signal\n    in1  : complex64   \u2014 element\
+      \ 2 received signal\n    out0 : float32[num_angles] \u2014 MUSIC pseudospectrum\
+      \  (\u221290\xB0 \u2026 +90\xB0)\n\n    Parameters\n    ----------\n    num_snapshots\
+      \ : int   \u2014 samples per covariance estimate  (default 100)\n    num_signals\
+      \   : int   \u2014 number of signal sources         (default 1)\n    num_angles\
+      \    : int   \u2014 angular grid points              (default 181 \u2192 1\xB0\
+      /bin)\n    \"\"\"\n\n    def __init__(self, num_snapshots: int = 100,\n    \
+      \                   num_signals:   int = 1,\n                       num_angles:\
+      \    int = 181):\n\n        gr.basic_block.__init__(\n            self,\n  \
+      \          name=\"MUSIC DOA\",\n            in_sig=[np.complex64, np.complex64],\n\
+      \            out_sig=[(np.float32, num_angles)],\n        )\n\n        self.N\
+      \ = num_snapshots   # snapshot count\n        self.K = num_signals     # number\
+      \ of sources  (must be < 2)\n        self.L = num_angles\n\n        # \u2500\
+      \u2500 Pre-compute steering matrix  A : (2, L) \u2500\u2500\u2500\u2500\u2500\
+      \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n       \
+      \ # a(\u03B8) = [1,  exp(j\xB7\u03C0\xB7sin\u03B8)]\n        angles_rad = np.deg2rad(np.linspace(-90,\
+      \ 90, num_angles))\n        self.A = np.vstack([\n            np.ones(num_angles,\
+      \ dtype=np.complex128),\n            np.exp(1j * np.pi * np.sin(angles_rad)),\n\
+      \        ])  # shape (2, L)\n\n    # ----------------------------------------------------------------\n\
+      \    def general_work(self, input_items, output_items):\n        n_in  = min(len(input_items[0]),\
+      \ len(input_items[1]))\n        n_out = len(output_items[0])\n\n        # How\
+      \ many full spectrum vectors can we produce?\n        n_produce = min(n_out,\
+      \ n_in // self.N)\n        if n_produce == 0:\n            return 0\n\n    \
+      \    for i in range(n_produce):\n            s = i * self.N\n\n            #\
+      \ \u2500\u2500 1. Data matrix  X : (2, N) \u2500\u2500\u2500\u2500\u2500\u2500\
+      \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+      \u2500\u2500\u2500\u2500\u2500\u2500\u2500\n            X = np.vstack([\n  \
+      \              input_items[0][s : s + self.N],\n                input_items[1][s\
+      \ : s + self.N],\n            ]).astype(np.complex128)\n\n            # \u2500\
+      \u2500 2. Sample covariance matrix  R : (2, 2) \u2500\u2500\u2500\u2500\u2500\
+      \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n            R = (X @ X.conj().T)\
+      \ / self.N\n\n            # \u2500\u2500 3. Eigendecomposition  (eigh \u2192\
+      \ ascending order) \u2500\u2500\u2500\u2500\u2500\u2500\n            _, V =\
+      \ np.linalg.eigh(R)\n\n            # \u2500\u2500 4. Noise subspace  E\u2099\
+      \ : (2, 2\u2212K) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
+      \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n            En\
+      \ = V[:, : 2 - self.K]\n\n            # \u2500\u2500 5. MUSIC pseudospectrum\
+      \  (vectorised over all angles) \u2500\n            #   G  = E\u2099 E\u2099\
+      \u1D34                     (2\xD72 noise projector)\n            #   denom[l]\
+      \ = a\u1D34(\u03B8\u2097) G a(\u03B8\u2097)      (real scalar per angle)\n \
+      \           G     = En @ En.conj().T                     # (2, 2)\n        \
+      \    AG    = self.A.conj().T @ G                  # (L, 2)\n            denom\
+      \ = np.real(np.einsum(\"la,al->l\", AG, self.A))  # (L,)\n            P    \
+      \ = (1.0 / np.maximum(denom, 1e-10)).astype(np.float32)\n\n            output_items[0][i]\
+      \ = P\n\n        self.consume_each(n_produce * self.N)\n        return n_produce\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_angles: '181'
+    num_signals: '1'
+    num_snapshots: '100'
+  states:
+    _io_cache: "('MUSIC DOA', 'music_doa', [('num_snapshots', '100'), ('num_signals',\
+      \ '1'), ('num_angles', '181')], [('0', 'complex', 1), ('1', 'complex', 1)],\
+      \ [('0', 'float', 181)], '\\n    MUSIC DOA Estimator \u2014 2-element ULA\\\
+      n\\n    Ports\\n    -----\\n    in0  : complex64   \u2014 element 1 received\
+      \ signal\\n    in1  : complex64   \u2014 element 2 received signal\\n    out0\
+      \ : float32[num_angles] \u2014 MUSIC pseudospectrum  (\u221290\xB0 \u2026 +90\xB0\
+      )\\n\\n    Parameters\\n    ----------\\n    num_snapshots : int   \u2014 samples\
+      \ per covariance estimate  (default 100)\\n    num_signals   : int   \u2014\
+      \ number of signal sources         (default 1)\\n    num_angles    : int   \u2014\
+      \ angular grid points              (default 181 \u2192 1\xB0/bin)\\n    ', [])"
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [504, 272.0]
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 8.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'True'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '180'
+    min: '-180'
+    name: '""'
+    nconnections: '1'
+    type: short
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [880, 296.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_number_sink_0_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'True'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '90'
+    min: '-90'
+    name: '"Max angle"'
+    nconnections: '1'
+    type: short
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.88'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1024, 96.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_vector_sink_f_0
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '1'
+    vlen: '181'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"x-Axis"'
+    x_start: '-90'
+    x_step: '1.0'
+    x_units: '""'
+    y_axis_label: '"y-Axis"'
+    y_units: '""'
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [680, 328.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [analog_noise_source_x_0, '0', blocks_add_xx_0_1, '1']
+- [analog_noise_source_x_0_0, '0', blocks_add_xx_0, '1']
+- [analog_sig_source_x_0_0, '0', blocks_add_xx_0_1, '0']
+- [analog_sig_source_x_0_0_0, '0', blocks_phase_shift_0, '0']
+- [blocks_add_const_vxx_0, '0', qtgui_number_sink_0_0, '0']
+- [blocks_add_xx_0, '0', epy_block_1, '1']
+- [blocks_add_xx_0_1, '0', epy_block_1, '0']
+- [blocks_argmax_xx_0, '0', blocks_add_const_vxx_0, '0']
+- [blocks_argmax_xx_0, '1', qtgui_number_sink_0, '0']
+- [blocks_phase_shift_0, '0', blocks_add_xx_0, '0']
+- [epy_block_1, '0', blocks_argmax_xx_0, '0']
+- [epy_block_1, '0', qtgui_vector_sink_f_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.9.2

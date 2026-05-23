@@ -11,6 +11,41 @@ The emphasis of this project is not only algorithm implementation, but also the 
 
 ---
 
+## Repository map
+
+Top-level folders are organized by the same three-stage research pipeline (MATLAB baseline → GNU Radio simulation → USRP hardware run):
+
+- `Monte-Carlo Simulation MATLAB/`
+  - `monte_carlo_simulation_for_nlms_music.m` — MATLAB Monte‑Carlo sweeps used to establish baseline behavior (SNR, snapshots, NLMS step size).
+
+- `Simulations/` — GNU Radio *software-only* simulations (controlled phase offset + AWGN)
+  - `MUSIC simulation/`
+    - `music_recent.grc` — GNU Radio Companion flowgraph for MUSIC simulation.
+    - `music_sim.py` — generated Python flowgraph script.
+    - `music_doa_block.py` — Python block implementing MUSIC DoA logic.
+    - `untitled_epy_block_1.py` / `untitled.py` — helper/experimental scripts (kept for reproducibility).
+  - `NLMS simulation/`
+    - `nlms_recent.grc` — GNU Radio Companion flowgraph for NLMS simulation.
+    - `nlms_recent.py` — generated Python flowgraph script.
+    - `nlms_recent_epy_block_*.py` — embedded Python blocks used by the flowgraph.
+
+- `USRPx310 Implementation /` — GNU Radio flowgraphs configured for **live USRP X310** capture
+  - `MUSIC on USRP/`
+    - `usrp_music.grc` — live UHD-based MUSIC flowgraph.
+    - `usrp_music.py` — generated Python flowgraph script.
+    - `usrp_music_epy_block_1.py` / `default_epy_block_1.py` — embedded Python blocks used by the flowgraph.
+  - `NLMS on USRP/`
+    - `usrp_nlms.grc` — live UHD-based NLMS flowgraph.
+    - `usrp_nlms.py` — generated Python flowgraph script.
+    - `usrp_nlms_epy_block_*.py` / `default_epy_block_*.py` — embedded Python blocks used by the flowgraph.
+
+Notes:
+- Files ending with `.grc` are GNU Radio Companion projects (open them in GRC).
+- Files ending with `.py` next to a `.grc` are typically GNU Radio’s generated Python scripts.
+- The space at the end of `USRPx310 Implementation ` is part of the folder name in this repo.
+
+---
+
 ## What problem is being solved?
 
 When a radio signal arrives at two spatially separated antennas, it reaches one antenna slightly before the other. For narrowband signals, that time delay is usually observed as a **phase difference** between the two received channels.

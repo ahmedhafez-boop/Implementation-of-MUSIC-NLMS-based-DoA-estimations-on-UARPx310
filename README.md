@@ -1,199 +1,167 @@
-# Real-Time Direction of Arrival (DoA) Estimation on USRP X310: MUSIC & NLMS
+# Direction of Arrival (DoA) Estimation on USRP X310 (MUSIC & NLMS)
 
-This repository contains a complete, end-to-end implementation and evaluation pipeline for **Direction of Arrival (DoA) estimation** using:
+This repository documents and implements an end-to-end, **research-oriented** workflow for **real-time Direction of Arrival (DoA)** estimation using a **two-channel USRP X310** and a **two-element antenna array**.
 
-- **MUSIC (Multiple Signal Classification)** — a high-resolution subspace method.
-- **NLMS (Normalized Least Mean Squares)** — an adaptive filtering approach inspired by Bakhshi & Shahtalebi (2018).
+The work compares two families of DoA estimators:
 
-The project progresses through **three validated stages**:
+- **MUSIC (Multiple Signal Classification)**: a classic high-resolution method based on estimating a covariance matrix and separating “signal” vs “noise” structure.
+- **NLMS (Normalized Least Mean Squares)**: an adaptive method that updates weights sample-by-sample and can be attractive for real-time SDR use due to lower computational overhead.
 
-1. **MATLAB Monte-Carlo simulations** (baseline performance sweeps).
-2. **GNU Radio software simulations** (bit-exact verification with controlled phase offsets).
-3. **Real-time hardware experiments** on a **two-channel USRP X310 SDR platform**.
-
-The work was prepared as a research-style technical report and includes algorithm derivations, simulation figures, GNU Radio flowgraphs, calibration methodology, and measured results.
+The emphasis of this project is not only algorithm implementation, but also the **practical engineering details** that determine whether DoA estimation works reliably on real hardware: phase calibration, overflow events, simulation pitfalls, and the trade-offs between accuracy and real-time constraints.
 
 ---
 
-## Abstract (Project Summary)
+## What problem is being solved?
 
-This project designs, simulates, and implements real-time DoA estimation using MUSIC and NLMS on a two-channel USRP X310 SDR. A MATLAB Monte-Carlo study sweeps **SNR**, **snapshot count**, and **NLMS step size** to establish baselines. The algorithms are then implemented as GNU Radio flowgraphs to validate signal-chain correctness in a controlled environment. Finally, the system is executed on real hardware and evaluated for true angles from **−60° to +60°**, while documenting practical SDR challenges such as **UHD receive overflows**, **phase-calibration sensitivity**, and **noise coupling artifacts**.
+When a radio signal arrives at two spatially separated antennas, it reaches one antenna slightly before the other. For narrowband signals, that time delay is usually observed as a **phase difference** between the two received channels.
 
-Measured hardware performance:
+If you know the antenna spacing and the carrier wavelength, that phase difference can be mapped to an **Angle of Arrival / Direction of Arrival (DoA)**.
 
-- **MUSIC:** MAE = **2.45°**, RMSE = **2.91°**
-- **NLMS:** MAE = **1.63°**, RMSE = **2.00°**
+In practice, real systems are messy:
 
----
+- Hardware channels may have unknown **static phase offsets**.
+- Streaming can drop samples due to host/transport limitations (e.g., **UHD overflows**).
+- Indoor reflections create **multipath**, distorting the ideal two-antenna phase relationship.
 
-## Repository Contents (High-Level)
-
-Although the repo is implementation-heavy (Python/GNU Radio + MATLAB), the structure typically includes:
-
-- **Python** code for GNU Radio Out-Of-Tree (OOT) / embedded blocks used to compute MUSIC pseudo-spectrum and NLMS updates.
-- **MATLAB** scripts for Monte-Carlo sweeps over SNR, snapshot count, and NLMS step size.
-- **Report figures** (flowgraphs, outputs, measurement photos, result tables) used in the accompanying IEEE-style report.
-
-> If you are looking for a specific part (MATLAB simulation, GNU Radio flowgraphs, or USRP execution scripts), search the repo for keywords such as `MUSIC`, `NLMS`, `Monte-Carlo`, `UHD`, or `grc`.
+This repo is built around addressing these realities, not just running textbook simulations.
 
 ---
 
-## System Model
+## Project pipeline (three-stage validation)
 
-A **two-element Uniform Linear Array (ULA)** with spacing **d** receives a narrowband source from angle **θ**.
+This work follows a research-style validation pipeline:
 
-Steering vector:
+### 1) MATLAB Monte‑Carlo baseline
+Before running anything on SDR hardware, the algorithms are tested in MATLAB using Monte‑Carlo trials.
 
-\[
-\mathbf{a}(\theta)=\begin{bmatrix}1 & e^{-j\frac{2\pi d}{\lambda}\sin\theta}\end{bmatrix}^T
-\]
+The purpose of this stage is to establish “expected behavior” under controlled assumptions (ideal array model, AWGN, controllable SNR).
 
-Snapshot model:
+Key sweeps include:
 
-\[
-\mathbf{x}_n = \mathbf{a}(\theta)s_n + \mathbf{v}_n
-\]
+- **SNR sweep**: how performance improves as noise decreases.
+- **Snapshot count sweep (N)**: how performance improves when you average more data.
+- **NLMS step-size sweep (μ)**: how stability and accuracy depend on adaptation aggressiveness.
 
----
+This stage answers: *“Under ideal conditions, should this algorithm work, and what parameters matter most?”*
 
-## Algorithms
+### 2) GNU Radio software simulation (signal-chain verification)
+After MATLAB, the estimators are re-implemented as GNU Radio flowgraphs.
 
-### 1) MUSIC
+This step is crucial because it verifies the **real signal-chain implementation** (vectorization, buffering, windowing, data types, rate handling) before any hardware is involved.
 
-1. Estimate covariance:
+A controlled test signal is split into two channels and a known phase offset is introduced so the “true” DoA is known. AWGN is then added.
 
-\[
-\hat{\mathbf{R}}_{x} = \frac{1}{N}\sum_{n=1}^{N}\mathbf{x}_n\mathbf{x}_n^{H}
-\]
+**Important pitfall documented in this project:**
 
-2. Eigen-decompose and extract noise subspace **Eₙ**.
+- If you reuse the **same noise source** in both channels during simulation, the noise becomes correlated.
+- MUSIC relies heavily on correct “noise behavior” assumptions; correlated noise can artificially improve/ruin results and lead to misleading conclusions.
 
-3. Evaluate pseudo-spectrum:
+This stage answers: *“Is the SDR-style implementation correct before plugging in the USRP?”*
 
-\[
-P_{\mathrm{MUSIC}}(\theta)=\frac{1}{\mathbf{a}^H(\theta)\mathbf{E}_n\mathbf{E}_n^H\mathbf{a}(\theta)}
-\]
+### 3) USRP X310 hardware experiment (real-time measurement)
+Finally, the same flowgraphs are run on live USRP X310 samples.
 
-4. Choose angle that maximizes \(P_{\mathrm{MUSIC}}(\theta)\).
+This stage captures real-world issues and measures end-to-end DoA accuracy for true angles spanning approximately **−60° to +60°**.
 
-### 2) NLMS-based DoA (Bakhshi & Shahtalebi-inspired)
+It also documents and discusses the dominant hardware limitations encountered.
 
-For each candidate angle \(\theta^{(k)}\in\Theta\), update a weight vector \(\mathbf{w}_k[n]\):
-
-\[
-\mathbf{w}_k[n]=\mathbf{w}_k[n-1]+\frac{\mu}{\epsilon+\|\mathbf{x}_n\|_2^2}\mathbf{x}_n e_{k,n}^*
-\]
-
-After \(N\) snapshots, the DoA is estimated by:
-
-\[
-\hat{\theta}=\arg\max_{\theta^{(k)}\in\Theta}\|\mathbf{w}_k[N]\|_2
-\]
+This stage answers: *“Does it still work on real hardware, and why does it fail when it fails?”*
 
 ---
 
-## Performance Metrics
+## Intuition: how the estimators behave
 
-Across repeated trials, the following metrics are used:
+### MUSIC (high resolution, but needs good statistics)
+Think of MUSIC as a method that tries to learn the “shape” of the data by averaging snapshots into a covariance matrix.
 
-- **RMSE:** \(\sqrt{\frac{1}{T}\sum_{t=1}^{T}(\hat\theta_t-\theta_0)^2}\)
-- **MAE:** \(\frac{1}{T}\sum_{t=1}^{T}|\hat\theta_t-\theta_0|\)
-- **Probability of Resolution (Pres):** fraction of trials with error < tolerance (e.g., 1°)
+- With **more snapshots**, the covariance estimate becomes more reliable.
+- With **higher SNR**, the separation between the signal structure and the noise structure becomes clearer.
 
----
+MUSIC can give very sharp peaks (high angular resolution), but it is sensitive to:
 
-## MATLAB Monte-Carlo Study
+- poor covariance estimates (too few snapshots),
+- channel mismatch / phase calibration errors,
+- assumptions violated in practice (correlated noise, multipath, dropped samples).
 
-A baseline Monte-Carlo evaluation was performed with **T = 500 trials** per operating point. The sweeps include:
+### NLMS (adaptive and lightweight)
+NLMS is an adaptive approach that updates a weight vector iteratively.
 
-- **SNR sweep** (e.g., MUSIC approaches sub-degree RMSE at sufficiently high SNR).
-- **Snapshot count sweep** (MUSIC improves strongly with N due to covariance estimation; NLMS improves with more adaptation steps).
-- **Step-size sweep** for NLMS (bowl-shaped stability/accuracy behavior).
+- It is naturally “streaming-friendly” because it processes samples/snapshots sequentially.
+- It depends strongly on the **step size μ**: too small → slow convergence; too large → instability or jitter.
 
-Key observation from the study:
-
-- Effective NLMS step sizes under tested conditions: approximately **μ ∈ [0.01, 0.1]**.
-
----
-
-## GNU Radio Simulation (Software Validation)
-
-Before running on hardware, the estimators were re-implemented in GNU Radio.
-
-- A tone source is split into two channels.
-- One channel is phase-shifted by:
-
-\[
-\psi_{\mathrm{sim}}=\frac{2\pi d}{\lambda}\sin\theta_{\mathrm{true}}
-\]
-
-- Independent AWGN sources are added to each channel.
-
-**Important implementation note:**
-
-- Using a *single shared noise source* across both channels creates artificial correlation and biases MUSIC by collapsing the noise subspace. Always use **independent noise sources** per channel in simulations.
+In this project’s measured trials, NLMS showed slightly better average error than MUSIC, suggesting it may be less fragile under certain hardware impairments.
 
 ---
 
-## USRP X310 Hardware Implementation
+## Hardware calibration (why it matters)
 
-### Calibration
+DoA depends on **relative phase** between channels. The USRP X310 has two receiver chains that can introduce a fixed, unknown phase offset between channels.
 
-The USRP X310 dual-channel front-end can introduce unknown static inter-channel phase offsets. A calibration tone is split and fed to both channels; the measured complex ratio is stored as a correction phasor and applied to subsequent receive buffers.
+A practical calibration approach used here is:
 
-### Practical challenges observed
+1. Feed the *same* reference tone to both channels (splitter).
+2. Measure the channel-to-channel complex ratio.
+3. Save it as a correction factor and apply it to subsequent measurements.
 
-- **UHD receive overflow (“O” events):** corrupts snapshot windows and introduces phase discontinuities.
-- **Phase-calibration sensitivity:** even small residual phase error can translate into angular bias.
-- **Multipath reflections** in indoor environments.
-
-Mitigations applied:
-
-- Reduced sample rate (e.g., **5 MS/s → 1 MS/s**).
-- Reduced search grid size (e.g., **181 → 91 points**).
-- Discarded snapshot windows containing overflow markers.
+**Key insight:** even small residual phase errors can translate directly into degrees of DoA bias—especially near broadside (around 0°), where the mapping can be very sensitive.
 
 ---
 
-## Measured Hardware Results (USRP X310)
+## Practical challenges observed (and why they matter)
 
-True AoA span: **−60° to +60°**.
+### 1) UHD Receive overflow (“O” events)
+An overflow means the host did not keep up with the incoming stream, so samples are dropped.
 
-### MUSIC
+Why this hurts DoA estimation:
 
-- **MAE:** 2.45°
-- **RMSE:** 2.91°
+- Dropped samples break the continuity of the buffer used for estimation.
+- Phase relationships can appear to “jump,” corrupting the measured inter-channel phase.
 
-### NLMS
+Mitigations used in this work include:
 
-- **MAE:** 1.63°
-- **RMSE:** 2.00°
+- reducing sample rate,
+- reducing the number of snapshots per estimate,
+- reducing the angle search grid size,
+- discarding buffers/windows that contain overflow indicators.
 
-NLMS achieved slightly lower MAE despite lower complexity; an outlier at 30° was likely associated with an overflow event.
+### 2) Noise coupling in simulation
+A single shared AWGN source for both channels creates artificial correlation and can bias MUSIC results. The fix is simply to use **independent noise sources per channel**.
+
+### 3) Indoor multipath
+Reflections create multiple arriving paths, so the “single plane wave” model becomes imperfect. This typically increases error and can produce outliers.
 
 ---
 
-## How to Cite / References
+## Summary of measured results (USRP X310)
 
-If you use or build upon this work, please cite the underlying methods:
+Using true angles spanning approximately **−60° to +60°**:
 
-- R. O. Schmidt, “Multiple emitter location and signal parameter estimation,” *IEEE Trans. Antennas Propag.*, 1986.
+- **MUSIC:** MAE ≈ **2.45°**, RMSE ≈ **2.91°**
+- **NLMS:** MAE ≈ **1.63°**, RMSE ≈ **2.00°**
+
+A notable NLMS outlier occurred near **30°**, suspected to coincide with an overflow event during that run.
+
+---
+
+## Reproducibility notes
+
+To reproduce similar experiments you typically need:
+
+- **MATLAB** (for the Monte‑Carlo baseline).
+- **GNU Radio + Python** (for simulations and algorithm blocks).
+- **UHD drivers + USRP X310** (for hardware runs).
+
+Real-time stability depends strongly on your host machine, OS scheduling, transport (1GbE vs 10GbE), and buffer settings. If you see frequent overflows, reduce sample rate and processing load first.
+
+---
+
+## References
+
+- R. O. Schmidt, “Multiple emitter location and signal parameter estimation,” *IEEE Transactions on Antennas and Propagation*, 1986.  
 - G. Bakhshi and K. Shahtalebi, “Role of the NLMS Algorithm in Direction of Arrival Estimation for Antenna Arrays,” *IEEE Communications Letters*, 2018.
-
----
-
-## Notes / Reproducibility
-
-To reproduce results, you typically need:
-
-- MATLAB for the Monte-Carlo sweeps.
-- GNU Radio (with Python) for flowgraph execution.
-- UHD drivers and a USRP X310 for hardware measurements.
-
-Because GNU Radio + USRP setups vary across machines, you may need to adjust sample rates, buffer sizes, and CPU scheduling to avoid overflows.
 
 ---
 
 ## License
 
-No explicit license file is currently included. If you intend others to reuse this work, consider adding an OSI-approved license (e.g., MIT, BSD-3-Clause, GPLv3) depending on your intended usage.
+No license file is currently included. If you plan to share or reuse the code broadly, consider adding a license (e.g., MIT, BSD-3-Clause, GPLv3) that matches your intended usage.

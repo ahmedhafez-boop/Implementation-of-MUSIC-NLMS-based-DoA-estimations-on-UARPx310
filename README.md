@@ -195,8 +195,4 @@ Real-time stability depends strongly on your host machine, OS scheduling, transp
 - R. O. Schmidt, “Multiple emitter location and signal parameter estimation,” *IEEE Transactions on Antennas and Propagation*, 1986.  
 - G. Bakhshi and K. Shahtalebi, “Role of the NLMS Algorithm in Direction of Arrival Estimation for Antenna Arrays,” *IEEE Communications Letters*, 2018.
 
----
 
-## License
-
-No license file is currently included. If you plan to share or reuse the code broadly, consider adding a license (e.g., MIT, BSD-3-Clause, GPLv3) that matches your intended usage.
